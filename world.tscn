@@ -1,0 +1,116 @@
+[gd_scene load_steps=15 format=3 uid="uid://b1xqofsnmqwym"]
+
+[ext_resource type="Texture2D" uid="uid://bytyn2prjmbn1" path="res://Novelty Cell Phone/Novelty Cell Phone/Textures/cell1.png" id="1_73sox"]
+[ext_resource type="Script" path="res://sandbox.gd" id="1_l4y76"]
+[ext_resource type="Texture2D" uid="uid://ptdv5kqmv4ep" path="res://Novelty Cell Phone/Novelty Cell Phone/Textures/cell1_Emission.png" id="2_3uepk"]
+[ext_resource type="Texture2D" uid="uid://dnyh7x2ggox26" path="res://Novelty Cell Phone/Novelty Cell Phone/Textures/cell3.png" id="2_u1fbs"]
+[ext_resource type="Texture2D" uid="uid://d53jaqkg0080" path="res://Novelty Cell Phone/Novelty Cell Phone/Textures/cell4.png" id="4_7g4gq"]
+[ext_resource type="ArrayMesh" uid="uid://d076lijqddwi5" path="res://Novelty Cell Phone/Novelty Cell Phone/Novelty Cell Phone.obj" id="4_ej2kk"]
+[ext_resource type="Script" path="res://camera_controller.gd" id="7_2akku"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8on3n"]
+albedo_texture = ExtResource("1_73sox")
+roughness_texture = ExtResource("4_7g4gq")
+emission_enabled = true
+emission_energy_multiplier = 3.96
+emission_texture = ExtResource("2_3uepk")
+normal_enabled = true
+normal_texture = ExtResource("2_u1fbs")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1kvqf"]
+
+[sub_resource type="Sky" id="Sky_2lq5p"]
+sky_material = SubResource("ProceduralSkyMaterial_1kvqf")
+
+[sub_resource type="Environment" id="Environment_xkybe"]
+background_mode = 1
+background_color = Color(0.137255, 0.164706, 0.180392, 1)
+sky = SubResource("Sky_2lq5p")
+ambient_light_source = 2
+ambient_light_color = Color(0.856067, 0.856067, 0.856067, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_m48xa"]
+viewport_path = NodePath("AxisCamera/X_Plane")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_8gmgp"]
+viewport_path = NodePath("AxisCamera/Y_Plane")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_vtbmt"]
+viewport_path = NodePath("AxisCamera/Z_Plane")
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_l4y76")
+
+[node name="Phone" type="Node3D" parent="."]
+
+[node name="PhoneModel" type="MeshInstance3D" parent="Phone"]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, -0.448604)
+material_override = SubResource("StandardMaterial3D_8on3n")
+mesh = ExtResource("4_ej2kk")
+skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xkybe")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -55.8136, 30.1286, 10.5626)
+script = ExtResource("7_2akku")
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+
+[node name="AxisCamera" type="Node3D" parent="."]
+
+[node name="X_Plane" type="SubViewport" parent="AxisCamera"]
+size = Vector2i(240, 240)
+
+[node name="Camera_x_plane" type="Camera3D" parent="AxisCamera/X_Plane"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 20, 0, 0)
+projection = 1
+size = 42.0
+
+[node name="Y_Plane" type="SubViewport" parent="AxisCamera"]
+size = Vector2i(240, 240)
+
+[node name="Camera_y_plane" type="Camera3D" parent="AxisCamera/Y_Plane"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 20, 0)
+projection = 1
+size = 42.0
+
+[node name="Z_Plane" type="SubViewport" parent="AxisCamera"]
+size = Vector2i(240, 240)
+
+[node name="Camera_z_plane" type="Camera3D" parent="AxisCamera/Z_Plane"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+projection = 1
+size = 42.0
+
+[node name="viewports" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="GridContainer" type="GridContainer" parent="viewports"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 100.0
+offset_right = 288.0
+offset_bottom = 926.0
+
+[node name="x_plane_image" type="TextureRect" parent="viewports/GridContainer"]
+layout_mode = 2
+texture = SubResource("ViewportTexture_m48xa")
+
+[node name="HSeparator" type="HSeparator" parent="viewports/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="y_plane_image" type="TextureRect" parent="viewports/GridContainer"]
+layout_mode = 2
+texture = SubResource("ViewportTexture_8gmgp")
+
+[node name="HSeparator2" type="HSeparator" parent="viewports/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="z_plane_image" type="TextureRect" parent="viewports/GridContainer"]
+layout_mode = 2
+texture = SubResource("ViewportTexture_vtbmt")
